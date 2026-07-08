@@ -2,8 +2,7 @@ import { env } from "@/lib/env";
 
 export const siteConfig = {
   name: "Image Manager",
-  description:
-    "Organize, optimize, and share your images — fast, accessible, and built for search.",
+  description: "Upload your photos, sort them into folders, and share what you want with a link.",
   url: env.NEXT_PUBLIC_SITE_URL,
   ogImage: "/opengraph-image",
   links: {
