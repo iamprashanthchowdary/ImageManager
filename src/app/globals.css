@@ -17,6 +17,7 @@
   --color-tertiary-label: var(--tertiary-label);
   --color-accent: var(--accent);
   --color-accent-subtle: var(--accent-subtle);
+  --color-danger: var(--danger);
 
   --font-sans: -apple-system, BlinkMacSystemFont, "SF Pro Text", system-ui, sans-serif;
   --font-display: -apple-system, BlinkMacSystemFont, "SF Pro Display", system-ui, sans-serif;
@@ -69,6 +70,7 @@
   --tertiary-label: oklch(0.62 0.008 250);
   --accent: oklch(0.55 0.18 250);
   --accent-subtle: oklch(0.94 0.035 250);
+  --danger: oklch(0.55 0.22 25);
 
   --shadow-tint: 32 42 58;
   --shadow-a1: 0.05;
@@ -88,6 +90,7 @@
   --tertiary-label: oklch(0.54 0.008 250);
   --accent: oklch(0.7 0.15 250);
   --accent-subtle: oklch(0.32 0.06 250);
+  --danger: oklch(0.7 0.19 25);
 
   --shadow-tint: 0 0 0;
   --shadow-a1: 0.5;

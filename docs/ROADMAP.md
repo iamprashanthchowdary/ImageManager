@@ -19,14 +19,31 @@ Status values: `not started` · `in progress` · `done`
 
 Apple HIG-inspired (clarity/deference/depth), oklch tokens, system font stack, light/dark via `next-themes`. Full token reference: [CLAUDE.md](../CLAUDE.md#design-system).
 
-| Item                                                                                 | Status                                                            |
-| ------------------------------------------------------------------------------------ | ----------------------------------------------------------------- |
-| Design tokens (color/type/spacing/radius/shadow) — `src/app/globals.css`             | done                                                              |
-| Core primitives in `src/components/ui/`: Button, Badge, Panel                        | done                                                              |
-| App shell in `src/components/layout/`: AppShell, Sidebar, ThemeToggle, ThemeProvider | done                                                              |
-| Additional primitives (input, select, dialog, dropdown, toast, avatar, etc.)         | not started — add each when a feature needs it, not speculatively |
+| Item                                                                                 | Status                                              |
+| ------------------------------------------------------------------------------------ | --------------------------------------------------- |
+| Design tokens (color/type/spacing/radius/shadow) — `src/app/globals.css`             | done                                                |
+| Core primitives in `src/components/ui/`: Button, Badge, Panel                        | done                                                |
+| App shell in `src/components/layout/`: AppShell, Sidebar, ThemeToggle, ThemeProvider | done                                                |
+| Toast (`src/components/ui/toast.tsx`)                                                | done — built in Phase 2 for the delete/undo pattern |
+| Other primitives (input, select, dialog, dropdown, avatar, etc.)                     | add each when a feature needs it, not speculatively |
 
-## Phase 2 — Auth
+## Phase 2 — Crop tool
+
+`/crop`. Fully client-side (no auth/storage dependency) — crops in the browser via canvas, exports as a direct download. This is the first real product feature; it deliberately ships ahead of Auth/Storage because it doesn't need either. Interaction model follows Apple Photos: pick a ratio, the crop frame is fixed, pan/zoom the image underneath it (not a resizable marquee).
+
+| Item                                                                                           | Status |
+| ---------------------------------------------------------------------------------------------- | ------ |
+| Image selection (drag-and-drop or file picker, local file only)                                | done   |
+| Crop workspace (fixed-frame pan/zoom, `react-easy-crop`)                                       | done   |
+| Ratio presets: curated social sizes (Instagram, YouTube, Twitter/X, Facebook, Pinterest, etc.) | done   |
+| Custom ratio (save your own W:H)                                                               | done   |
+| Delete a preset (built-in or custom), non-destructive — undo via toast, built-ins restorable   | done   |
+| Export cropped image as PNG download                                                           | done   |
+| Preferences persisted in `localStorage` (no account needed yet)                                | done   |
+
+**Future increment (needs Phase 3 — Auth):** sync custom ratios + deletions to the user's account instead of `localStorage`, so they follow the user across devices. Not built now — `localStorage` is the right amount of persistence for an anonymous tool.
+
+## Phase 3 — Auth
 
 | Item                                               | Status      |
 | -------------------------------------------------- | ----------- |
@@ -36,21 +53,21 @@ Apple HIG-inspired (clarity/deference/depth), oklch tokens, system font stack, l
 | `proxy.ts` optimistic route protection             | not started |
 | Role-based permissions (owner/admin/member/viewer) | not started |
 
-## Phase 3 — Core image storage
+## Phase 4 — Core image storage
 
-| Item                                                                                                                                               | Status      |
-| -------------------------------------------------------------------------------------------------------------------------------------------------- | ----------- |
-| Cloudflare R2 bucket + SDK wiring                                                                                                                  | not started |
-| `images` / `folders` schema (Drizzle + Neon)                                                                                                       | not started |
-| Upload (single + bulk)                                                                                                                             | not started |
-| Drag-and-drop upload — visual spec in [docs/design/design-system-reference.html](design/design-system-reference.html) (empty + drag-active states) | not started |
-| Sharp processing pipeline (resize, AVIF/WebP, thumbnails)                                                                                          | not started |
-| Image preview                                                                                                                                      | not started |
-| Metadata viewing (dimensions, size, EXIF where relevant)                                                                                           | not started |
-| Rename / delete / move / duplicate                                                                                                                 | not started |
-| Folder organization (nested folders)                                                                                                               | not started |
+| Item                                                                                                                                                              | Status      |
+| ----------------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------- |
+| Cloudflare R2 bucket + SDK wiring                                                                                                                                 | not started |
+| `images` / `folders` schema (Drizzle + Neon)                                                                                                                      | not started |
+| Upload (single + bulk)                                                                                                                                            | not started |
+| Drag-and-drop upload — visual spec in [docs/design/design-system-reference.html](design/design-system-reference.html); can reuse/extend Phase 2's `ImageDropzone` | not started |
+| Sharp processing pipeline (resize, AVIF/WebP, thumbnails)                                                                                                         | not started |
+| Image preview                                                                                                                                                     | not started |
+| Metadata viewing (dimensions, size, EXIF where relevant)                                                                                                          | not started |
+| Rename / delete / move / duplicate                                                                                                                                | not started |
+| Folder organization (nested folders)                                                                                                                              | not started |
 
-## Phase 4 — Organization & discovery
+## Phase 5 — Organization & discovery
 
 | Item                                        | Status      |
 | ------------------------------------------- | ----------- |
@@ -61,7 +78,7 @@ Apple HIG-inspired (clarity/deference/depth), oklch tokens, system font stack, l
 | Favorites                                   | not started |
 | Collections                                 | not started |
 
-## Phase 5 — Sharing (public/SEO surface)
+## Phase 6 — Sharing (public/SEO surface)
 
 | Item                                                                   | Status      |
 | ---------------------------------------------------------------------- | ----------- |
@@ -71,16 +88,16 @@ Apple HIG-inspired (clarity/deference/depth), oklch tokens, system font stack, l
 | Dynamic OG image generation per share/collection                       | not started |
 | Sitemap/robots reflecting real public URLs                             | not started |
 
-## Phase 6 — Hardening
+## Phase 7 — Hardening
 
-| Item                                                     | Status      |
-| -------------------------------------------------------- | ----------- |
-| Sentry + Speed Insights wired to a real deployment       | not started |
-| Lighthouse CI budget gate in CI                          | not started |
-| Playwright e2e job in CI (against a deployed preview)    | not started |
-| Security review pass (rate limiting live, CSP finalized) | not started |
-| PostHog analytics + feature flags                        | not started |
+| Item                                                                             | Status      |
+| -------------------------------------------------------------------------------- | ----------- |
+| Sentry + Speed Insights wired to a real deployment                               | not started |
+| Lighthouse CI budget gate in CI                                                  | not started |
+| Playwright e2e job in CI (runs `pnpm build && pnpm start` locally in the runner) | done        |
+| Security review pass (rate limiting live, CSP finalized)                         | not started |
+| PostHog analytics + feature flags                                                | not started |
 
 ---
 
-**Next up:** waiting on the user for which feature to build first — Phase 2 (Auth) is the suggested default if no preference is given, since storage/organization/sharing all depend on having a user to own data.
+**Next up:** Phase 3 (Auth) is the suggested default now that Phase 2 has shipped, since storage/organization/sharing all depend on having a user to own data.

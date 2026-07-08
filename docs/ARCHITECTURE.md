@@ -212,12 +212,11 @@ Notes for whoever builds this: soft-delete (`deleted_at`) on `images`/`folders` 
 
 ## 15. CI/CD strategy
 
-Current pipeline (`.github/workflows/ci.yml`), runs on every push/PR: install (frozen lockfile) → lint → format check → typecheck → unit tests → build.
+Current pipeline (`.github/workflows/ci.yml`), runs on every push/PR: install (frozen lockfile) → lint → format check → typecheck → unit tests → build → Playwright e2e (against `pnpm build && pnpm start` running locally in the CI runner — no deployed preview needed for this to work).
 
 Planned additions, added when their preconditions exist (not now):
 
-- Playwright e2e job once there's a real deployed preview URL to point it at.
-- Lighthouse CI budget gate once there are real pages beyond the placeholder scaffold.
+- Lighthouse CI budget gate once there are more real pages to budget across.
 - DB migration check/dry-run once Drizzle schema + Neon are wired up.
 - Deploy is handled by Vercel's own GitHub integration, not a custom Actions job.
 

@@ -1,5 +1,7 @@
-import { Button } from "@/components/ui/button";
+import Link from "next/link";
+import { buttonVariants } from "@/components/ui/button";
 import { ThemeToggle } from "@/components/layout/theme-toggle";
+import { cn } from "@/lib/utils";
 import { siteConfig } from "@/config/site";
 
 export default function Home() {
@@ -13,10 +15,9 @@ export default function Home() {
 
       <p className="text-body text-secondary-label max-w-md">{siteConfig.description}</p>
 
-      <div className="flex items-center gap-3 pt-2">
-        <Button variant="primary">Get started</Button>
-        <Button variant="secondary">Learn more</Button>
-      </div>
+      <Link href="/crop" className={cn(buttonVariants({ variant: "primary" }), "mt-2")}>
+        Crop a photo
+      </Link>
     </main>
   );
 }

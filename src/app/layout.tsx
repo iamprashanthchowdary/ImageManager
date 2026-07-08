@@ -1,5 +1,6 @@
 import type { Metadata, Viewport } from "next";
 import { ThemeProvider } from "@/components/layout/theme-provider";
+import { ToastProvider } from "@/components/ui/toast";
 import { siteConfig } from "@/config/site";
 import "./globals.css";
 
@@ -66,7 +67,7 @@ export default function RootLayout({
           enableSystem
           disableTransitionOnChange
         >
-          {children}
+          <ToastProvider>{children}</ToastProvider>
         </ThemeProvider>
       </body>
     </html>
