@@ -21,6 +21,8 @@ The design system (tokens + Button/Badge/Panel/Toast/AppShell/Sidebar/ThemeToggl
 
 **Phase 2 (Crop tool, `/crop`) is built** — `src/features/crop/`. It's fully client-side (no DB/auth), with preferences in `localStorage`. Worth reading as a template for the next feature: it shows the expected shape (`components/`, `hooks/`, `lib/`, `schema.ts`, `types.ts`), the localStorage-hydration pattern, and the delete-with-undo-toast pattern used for anything destructive.
 
+**Cross-feature logic goes in `src/lib/<domain>/` (pure) or `src/hooks/` (React), not duplicated per-feature.** Example: image format/encoding/download handling is `src/lib/image/` + `src/hooks/use-image-format-options.ts`, built once for the crop feature but written to be reused as-is by a future image-converter feature. When you're about to write logic a second feature will plausibly need too, check `src/lib/` and `src/hooks/` first — and if you're building the second feature that needs something a first feature already solved locally, promote that logic up rather than copying it.
+
 Do not add the still-missing pieces speculatively. Add each one in the commit/PR that actually needs it, per [docs/ROADMAP.md](docs/ROADMAP.md).
 
 ## Tech stack (why → docs/ARCHITECTURE.md §1)
@@ -66,7 +68,7 @@ Apple HIG-inspired: clarity/deference/depth, near-monochrome UI with a single ac
 
 **Destructive-but-recoverable actions use undo-toast, not a confirm dialog** — matches Apple's own convention (Mail, Reminders: "Deleted. Undo") and keeps the user from having to stop and think. Use `useToast()` (`src/components/ui/toast.tsx`): `show(message, { action: { label: "Undo", onClick } })`. Reach for a confirm dialog only when the action is _not_ reversible (e.g. nothing to undo to).
 
-**Components that exist today** (`src/components/ui/`: `Button`, `Badge`, `Panel`, `Toast`/`ToastProvider`; `src/components/layout/`: `AppShell`, `Sidebar`/`SidebarSection`/`SidebarItem`, `ThemeToggle`, `ThemeProvider`). Nothing else (input, select, dialog, dropdown, avatar...) exists yet — add it in the feature commit that first needs it, matching the same token/variant conventions (`cva` for variants, tokens above for color/spacing), not ahead of time.
+**Components that exist today** (`src/components/ui/`: `Button`, `Badge`, `Panel`, `Select`, `Toast`/`ToastProvider`; `src/components/layout/`: `AppShell`, `Sidebar`/`SidebarSection`/`SidebarItem`, `ThemeToggle`, `ThemeProvider`). Nothing else (input, dialog, dropdown, avatar...) exists yet — add it in the feature commit that first needs it, matching the same token/variant conventions (`cva` for variants, tokens above for color/spacing), not ahead of time.
 
 **JSX whitespace gotcha:** when text follows a `</code>` (or any inline element) and the JSX source line-wraps before the next closing tag, JSX's whitespace-collapsing can silently eat the space (e.g. `docs/ROADMAP.md</code> for what's next.` wrapping before `</p>` renders as `...mdfor...`). Prettier can also reintroduce this by rewrapping lines you'd manually fixed with `{" "}`. The robust fix is a full string expression, not a trailing `{" "}`: `{" for what's next."}` as its own child — Prettier won't reformat inside a string literal, so it can't reintroduce the bug. See `src/app/page.tsx` for the working pattern.
 

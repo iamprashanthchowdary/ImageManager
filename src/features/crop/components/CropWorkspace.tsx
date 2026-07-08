@@ -3,20 +3,32 @@
 import { useCallback, useMemo, useState } from "react";
 import Cropper, { type MediaSize } from "react-easy-crop";
 import { Button } from "@/components/ui/button";
+import { Select } from "@/components/ui/select";
 import { ImageDropzone } from "@/features/crop/components/ImageDropzone";
 import { RatioPicker } from "@/features/crop/components/RatioPicker";
 import { useAspectRatios } from "@/features/crop/hooks/use-aspect-ratios";
 import { useCropImage } from "@/features/crop/hooks/use-crop-image";
+import { useImageFormatOptions } from "@/hooks/use-image-format-options";
+import { downloadBlob } from "@/lib/image/download-blob";
+import type { ImageFormatId } from "@/lib/image/formats";
 
 export function CropWorkspace() {
   const [file, setFile] = useState<File | null>(null);
   const [imageSrc, setImageSrc] = useState<string | null>(null);
   const [naturalRatio, setNaturalRatio] = useState<number | null>(null);
   const [selectedId, setSelectedId] = useState("original");
+  const [formatId, setFormatId] = useState<ImageFormatId>("png");
+  const [quality, setQuality] = useState(0.9);
   const [isExporting, setIsExporting] = useState(false);
 
   const ratios = useAspectRatios();
   const crop = useCropImage();
+  const { formats } = useImageFormatOptions();
+
+  const selectedFormat = useMemo(
+    () => formats.find((f) => f.id === formatId) ?? formats[0],
+    [formats, formatId],
+  );
 
   const allRatios = useMemo(
     () => [...ratios.presets, ...ratios.customRatios],
@@ -63,28 +75,21 @@ export function CropWorkspace() {
   }, []);
 
   const handleDownload = useCallback(async () => {
-    if (!imageSrc || !file) {
+    if (!imageSrc || !file || !selectedFormat) {
       return;
     }
     setIsExporting(true);
     try {
-      const blob = await crop.exportCrop(imageSrc);
+      const blob = await crop.exportCrop(imageSrc, selectedFormat, quality);
       if (!blob) {
         return;
       }
-      const url = URL.createObjectURL(blob);
-      const link = document.createElement("a");
       const baseName = file.name.replace(/\.[^./]+$/, "");
-      link.href = url;
-      link.download = `${baseName}-cropped.png`;
-      document.body.appendChild(link);
-      link.click();
-      link.remove();
-      URL.revokeObjectURL(url);
+      downloadBlob(blob, `${baseName}-cropped.${selectedFormat.extension}`);
     } finally {
       setIsExporting(false);
     }
-  }, [crop, imageSrc, file]);
+  }, [crop, imageSrc, file, selectedFormat, quality]);
 
   if (!imageSrc) {
     return (
@@ -122,6 +127,39 @@ export function CropWorkspace() {
             aria-label="Zoom"
             className="accent-accent flex-1"
           />
+        </div>
+
+        <div className="flex flex-wrap items-center gap-4 px-1">
+          <div className="flex items-center gap-2">
+            <span className="text-footnote text-tertiary-label">Format</span>
+            <Select
+              value={selectedFormat?.id}
+              onChange={(event) => setFormatId(event.target.value as ImageFormatId)}
+              aria-label="Download format"
+            >
+              {formats.map((format) => (
+                <option key={format.id} value={format.id}>
+                  {format.label}
+                </option>
+              ))}
+            </Select>
+          </div>
+
+          {selectedFormat?.supportsQuality && (
+            <div className="flex flex-1 items-center gap-3">
+              <span className="text-footnote text-tertiary-label">Quality</span>
+              <input
+                type="range"
+                min={0.4}
+                max={1}
+                step={0.05}
+                value={quality}
+                onChange={(event) => setQuality(Number(event.target.value))}
+                aria-label="Quality"
+                className="accent-accent flex-1"
+              />
+            </div>
+          )}
         </div>
 
         <div className="flex items-center justify-between">

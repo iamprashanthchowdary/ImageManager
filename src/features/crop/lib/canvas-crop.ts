@@ -9,7 +9,16 @@ function loadImage(src: string): Promise<HTMLImageElement> {
   });
 }
 
-export async function cropImageToBlob(imageSrc: string, area: CropPixelArea): Promise<Blob> {
+/**
+ * Crops only — produces a canvas at the target crop size. Encoding that
+ * canvas to a specific format/quality is the shared service's job (see
+ * src/lib/image/), so the same encoder is used by every feature that
+ * exports an image, not just crop.
+ */
+export async function getCroppedCanvas(
+  imageSrc: string,
+  area: CropPixelArea,
+): Promise<HTMLCanvasElement> {
   const image = await loadImage(imageSrc);
   const canvas = document.createElement("canvas");
   canvas.width = Math.round(area.width);
@@ -21,14 +30,5 @@ export async function cropImageToBlob(imageSrc: string, area: CropPixelArea): Pr
   }
 
   ctx.drawImage(image, area.x, area.y, area.width, area.height, 0, 0, canvas.width, canvas.height);
-
-  return new Promise((resolve, reject) => {
-    canvas.toBlob((blob) => {
-      if (blob) {
-        resolve(blob);
-      } else {
-        reject(new Error("Failed to export cropped image"));
-      }
-    }, "image/png");
-  });
+  return canvas;
 }

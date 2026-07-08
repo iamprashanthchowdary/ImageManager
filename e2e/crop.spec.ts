@@ -22,5 +22,24 @@ test("crop flow: pick a photo, choose a preset ratio, download the result", asyn
   const downloadPromise = page.waitForEvent("download");
   await downloadButton.click();
   const download = await downloadPromise;
-  expect(download.suggestedFilename()).toContain("cropped");
+  expect(download.suggestedFilename()).toBe("sample-cropped.png");
+});
+
+test("format picker: switching to JPG changes the downloaded file extension", async ({ page }) => {
+  await page.goto("/crop");
+
+  await page
+    .locator('input[type="file"]')
+    .setInputFiles(path.join(__dirname, "fixtures/sample.png"));
+
+  const downloadButton = page.getByRole("button", { name: "Download" });
+  await expect(downloadButton).toBeEnabled({ timeout: 5000 });
+
+  await page.getByLabel("Download format").selectOption("jpeg");
+  await expect(page.getByLabel("Quality")).toBeVisible();
+
+  const downloadPromise = page.waitForEvent("download");
+  await downloadButton.click();
+  const download = await downloadPromise;
+  expect(download.suggestedFilename()).toBe("sample-cropped.jpg");
 });

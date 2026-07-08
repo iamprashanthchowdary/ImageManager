@@ -31,17 +31,19 @@ Apple HIG-inspired (clarity/deference/depth), oklch tokens, system font stack, l
 
 `/crop`. Fully client-side (no auth/storage dependency) — crops in the browser via canvas, exports as a direct download. This is the first real product feature; it deliberately ships ahead of Auth/Storage because it doesn't need either. Interaction model follows Apple Photos: pick a ratio, the crop frame is fixed, pan/zoom the image underneath it (not a resizable marquee).
 
-| Item                                                                                           | Status |
-| ---------------------------------------------------------------------------------------------- | ------ |
-| Image selection (drag-and-drop or file picker, local file only)                                | done   |
-| Crop workspace (fixed-frame pan/zoom, `react-easy-crop`)                                       | done   |
-| Ratio presets: curated social sizes (Instagram, YouTube, Twitter/X, Facebook, Pinterest, etc.) | done   |
-| Custom ratio (save your own W:H)                                                               | done   |
-| Delete a preset (built-in or custom), non-destructive — undo via toast, built-ins restorable   | done   |
-| Export cropped image as PNG download                                                           | done   |
-| Preferences persisted in `localStorage` (no account needed yet)                                | done   |
+| Item                                                                                                                      | Status |
+| ------------------------------------------------------------------------------------------------------------------------- | ------ |
+| Image selection (drag-and-drop or file picker, local file only)                                                           | done   |
+| Crop workspace (fixed-frame pan/zoom, `react-easy-crop`)                                                                  | done   |
+| Ratio presets: curated social sizes (Instagram, YouTube, Twitter/X, Facebook, Pinterest, etc.)                            | done   |
+| Custom ratio (save your own W:H)                                                                                          | done   |
+| Delete a preset (built-in or custom), non-destructive — undo via toast, built-ins restorable                              | done   |
+| Export downloaded image as PNG/JPG/WebP (+AVIF where the browser can encode it), with a quality control for lossy formats | done   |
+| Preferences persisted in `localStorage` (no account needed yet)                                                           | done   |
 
 **Future increment (needs Phase 3 — Auth):** sync custom ratios + deletions to the user's account instead of `localStorage`, so they follow the user across devices. Not built now — `localStorage` is the right amount of persistence for an anonymous tool.
+
+**Shared image service:** format handling (registry, browser-capability detection, canvas encoding, download trigger) lives in `src/lib/image/`, not inside the crop feature — see [CLAUDE.md § Design system](../CLAUDE.md#design-system). It was built this way on purpose: a future **image converter** feature (format-convert an image without cropping it) will reuse it directly rather than re-implementing encoding/download logic. That converter feature isn't scoped or scheduled yet — add it as its own phase here once it is, at which point it should be a thin feature on top of the existing service, not a new one.
 
 ## Phase 3 — Auth
 
