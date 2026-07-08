@@ -17,13 +17,14 @@ Status values: `not started` · `in progress` · `done`
 
 ## Phase 1 — Design system
 
-_Waiting on input: colors, typography, spacing scale, component library preference (build on Radix primitives vs. adopt shadcn/ui vs. fully custom)._
+Apple HIG-inspired (clarity/deference/depth), oklch tokens, system font stack, light/dark via `next-themes`. Full token reference: [CLAUDE.md](../CLAUDE.md#design-system).
 
-| Item                                                                                   | Status      |
-| -------------------------------------------------------------------------------------- | ----------- |
-| Design tokens (color/type/spacing)                                                     | not started |
-| Core primitives in `src/components/ui/` (button, input, dialog, dropdown, toast, etc.) | not started |
-| App shell (`src/components/layout/`: header, nav, footer)                              | not started |
+| Item                                                                                 | Status                                                            |
+| ------------------------------------------------------------------------------------ | ----------------------------------------------------------------- |
+| Design tokens (color/type/spacing/radius/shadow) — `src/app/globals.css`             | done                                                              |
+| Core primitives in `src/components/ui/`: Button, Badge, Panel                        | done                                                              |
+| App shell in `src/components/layout/`: AppShell, Sidebar, ThemeToggle, ThemeProvider | done                                                              |
+| Additional primitives (input, select, dialog, dropdown, toast, avatar, etc.)         | not started — add each when a feature needs it, not speculatively |
 
 ## Phase 2 — Auth
 
@@ -37,17 +38,17 @@ _Waiting on input: colors, typography, spacing scale, component library preferen
 
 ## Phase 3 — Core image storage
 
-| Item                                                      | Status      |
-| --------------------------------------------------------- | ----------- |
-| Cloudflare R2 bucket + SDK wiring                         | not started |
-| `images` / `folders` schema (Drizzle + Neon)              | not started |
-| Upload (single + bulk)                                    | not started |
-| Drag-and-drop upload                                      | not started |
-| Sharp processing pipeline (resize, AVIF/WebP, thumbnails) | not started |
-| Image preview                                             | not started |
-| Metadata viewing (dimensions, size, EXIF where relevant)  | not started |
-| Rename / delete / move / duplicate                        | not started |
-| Folder organization (nested folders)                      | not started |
+| Item                                                                                                                                               | Status      |
+| -------------------------------------------------------------------------------------------------------------------------------------------------- | ----------- |
+| Cloudflare R2 bucket + SDK wiring                                                                                                                  | not started |
+| `images` / `folders` schema (Drizzle + Neon)                                                                                                       | not started |
+| Upload (single + bulk)                                                                                                                             | not started |
+| Drag-and-drop upload — visual spec in [docs/design/design-system-reference.html](design/design-system-reference.html) (empty + drag-active states) | not started |
+| Sharp processing pipeline (resize, AVIF/WebP, thumbnails)                                                                                          | not started |
+| Image preview                                                                                                                                      | not started |
+| Metadata viewing (dimensions, size, EXIF where relevant)                                                                                           | not started |
+| Rename / delete / move / duplicate                                                                                                                 | not started |
+| Folder organization (nested folders)                                                                                                               | not started |
 
 ## Phase 4 — Organization & discovery
 
@@ -82,4 +83,4 @@ _Waiting on input: colors, typography, spacing scale, component library preferen
 
 ---
 
-**Next up:** waiting on the user for (1) the design system direction and (2) which feature to build first — see Phase 1/2 ordering above as the suggested default if no preference is given.
+**Next up:** waiting on the user for which feature to build first — Phase 2 (Auth) is the suggested default if no preference is given, since storage/organization/sharing all depend on having a user to own data.

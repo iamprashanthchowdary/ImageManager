@@ -1,26 +1,102 @@
 @import "tailwindcss";
+@custom-variant dark (&:where(.dark, .dark *));
+
+/*
+ * Design system tokens — Apple HIG-inspired (clarity/deference/depth), oklch color space.
+ * Named after Apple's own semantic color roles (label/secondaryLabel/etc.) and system
+ * font stack (no webfont download: zero network cost, zero font-swap CLS).
+ */
+@theme inline {
+  --color-bg: var(--bg);
+  --color-bg-secondary: var(--bg-secondary);
+  --color-bg-elevated: var(--bg-elevated);
+  --color-border: var(--border);
+  --color-border-subtle: var(--border-subtle);
+  --color-label: var(--label);
+  --color-secondary-label: var(--secondary-label);
+  --color-tertiary-label: var(--tertiary-label);
+  --color-accent: var(--accent);
+  --color-accent-subtle: var(--accent-subtle);
+
+  --font-sans: -apple-system, BlinkMacSystemFont, "SF Pro Text", system-ui, sans-serif;
+  --font-display: -apple-system, BlinkMacSystemFont, "SF Pro Display", system-ui, sans-serif;
+  /* SF Pro's "Medium" sits at 590, not the CSS-standard 500 — matches the design system's use of 590 for emphasized labels/buttons. */
+  --font-weight-medium: 590;
+
+  /* Apple HIG type scale. Pair with a font-weight utility at the call site. */
+  --text-large-title: 34px;
+  --text-large-title--line-height: 1.15;
+  --text-large-title--letter-spacing: -0.015em;
+  --text-title-1: 28px;
+  --text-title-1--line-height: 1.2;
+  --text-title-1--letter-spacing: -0.012em;
+  --text-title-2: 22px;
+  --text-title-2--line-height: 1.25;
+  --text-title-2--letter-spacing: -0.008em;
+  --text-title-3: 20px;
+  --text-title-3--line-height: 1.3;
+  --text-title-3--letter-spacing: -0.006em;
+  --text-headline: 17px;
+  --text-headline--line-height: 1.35;
+  --text-headline--letter-spacing: -0.004em;
+  --text-body: 17px;
+  --text-body--line-height: 1.5;
+  --text-subhead: 15px;
+  --text-subhead--line-height: 1.5;
+  --text-footnote: 13px;
+  --text-footnote--line-height: 1.45;
+
+  --radius-sm: 6px;
+  --radius-md: 10px;
+  --radius-lg: 14px;
+  --radius-xl: 20px;
+  --radius-2xl: 28px;
+
+  --shadow-e1: 0 1px 3px rgb(var(--shadow-tint) / var(--shadow-a1));
+  --shadow-e2: 0 3px 10px rgb(var(--shadow-tint) / var(--shadow-a2));
+  --shadow-e3: 0 10px 28px rgb(var(--shadow-tint) / var(--shadow-a3));
+  --shadow-e4: 0 20px 56px rgb(var(--shadow-tint) / var(--shadow-a4));
+}
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --bg: oklch(1 0 0);
+  --bg-secondary: oklch(0.975 0.003 250);
+  --bg-elevated: oklch(1 0 0);
+  --border: oklch(0.89 0.005 250);
+  --border-subtle: oklch(0.93 0.003 250);
+  --label: oklch(0.18 0.01 250);
+  --secondary-label: oklch(0.47 0.012 250);
+  --tertiary-label: oklch(0.62 0.008 250);
+  --accent: oklch(0.55 0.18 250);
+  --accent-subtle: oklch(0.94 0.035 250);
+
+  --shadow-tint: 32 42 58;
+  --shadow-a1: 0.05;
+  --shadow-a2: 0.07;
+  --shadow-a3: 0.1;
+  --shadow-a4: 0.16;
 }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
+.dark {
+  --bg: oklch(0.17 0.006 250);
+  --bg-secondary: oklch(0.205 0.008 250);
+  --bg-elevated: oklch(0.235 0.009 250);
+  --border: oklch(0.33 0.01 250);
+  --border-subtle: oklch(0.28 0.008 250);
+  --label: oklch(0.96 0.003 250);
+  --secondary-label: oklch(0.72 0.008 250);
+  --tertiary-label: oklch(0.54 0.008 250);
+  --accent: oklch(0.7 0.15 250);
+  --accent-subtle: oklch(0.32 0.06 250);
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+  --shadow-tint: 0 0 0;
+  --shadow-a1: 0.5;
+  --shadow-a2: 0.55;
+  --shadow-a3: 0.6;
+  --shadow-a4: 0.65;
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  background: var(--color-bg);
+  color: var(--color-label);
 }

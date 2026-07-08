@@ -1,0 +1,499 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <script src="./support.js"></script>
+  </head>
+  <body>
+    <x-dc>
+      <helmet data-dc-atomics>
+        <title>Image Manager — Design System</title>
+        <style>
+          @keyframes pulse {
+            0%,
+            100% {
+              opacity: 0.55;
+            }
+            50% {
+              opacity: 1;
+            }
+          }
+          @keyframes floatUp {
+            from {
+              transform: translateY(6px);
+              opacity: 0;
+            }
+            to {
+              transform: translateY(0);
+              opacity: 1;
+            }
+          }
+        </style>
+      </helmet>
+
+      <div style="{{ rootStyle }}">
+        <!-- ============ HEADER ============ -->
+        <div
+          style="
+            display: flex;
+            align-items: flex-start;
+            justify-content: space-between;
+            gap: 24px;
+            padding: 56px 64px 40px;
+            max-width: 1440px;
+            margin: 0 auto;
+          "
+        >
+          <div>
+            <div
+              style="font:590 13px/1.4 -apple-system,BlinkMacSystemFont,'SF Pro Text',sans-serif; letter-spacing:0.02em; text-transform:uppercase; color:{{ t.accent }}; margin-bottom:10px;"
+            >
+              Design System
+            </div>
+            <h1
+              style="font:700 40px/1.1 -apple-system,BlinkMacSystemFont,'SF Pro Display',sans-serif; letter-spacing:-0.015em; color:{{ t.textPrimary }}; margin:0 0 10px;"
+            >
+              Image Manager
+            </h1>
+            <p
+              style="font:400 17px/1.5 -apple-system,BlinkMacSystemFont,'SF Pro Text',sans-serif; color:{{ t.textSecondary }}; max-width:560px; margin:0;"
+            >
+              Foundations and the upload dropzone treatment — clarity, deference, depth.
+              Near-monochrome UI, one accent, content stays the hero.
+            </p>
+          </div>
+          <button onClick="{{ toggleTheme }}" style="{{ toggleBtnStyle }}">
+            <span style="{{ toggleDotStyle }}"></span>
+            {{ toggleLabel }}
+          </button>
+        </div>
+
+        <!-- ============ ASSUMPTIONS ============ -->
+        <div style="max-width: 1440px; margin: 0 auto; padding: 0 64px 48px">
+          <div style="{{ noteCardStyle }}">
+            <div
+              style="font:600 13px -apple-system,sans-serif; color:{{ t.textPrimary }}; margin-bottom:8px;"
+            >
+              Notes for review
+            </div>
+            <ul
+              style="margin:0; padding-left:18px; font:400 14px/1.7 -apple-system,sans-serif; color:{{ t.textSecondary }};"
+            >
+              <li>
+                Single accent (blue) reserved for selection, links, and primary actions only —
+                everything else stays neutral gray so photos read as the hero.
+              </li>
+              <li>
+                System font stack (SF Pro on Apple devices, falls back gracefully elsewhere) at HIG
+                type-scale steps.
+              </li>
+              <li>
+                Depth comes from soft, low-opacity shadows and translucency, not borders — thin
+                hairline borders only where a hard edge is needed (sidebar, input fields).
+              </li>
+              <li>Toggle light/dark above — every token below is theme-aware.</li>
+            </ul>
+          </div>
+        </div>
+
+        <!-- ============ COLOR TOKENS ============ -->
+        <div style="max-width: 1440px; margin: 0 auto; padding: 0 64px 56px">
+          <div style="{{ sectionLabelStyle }}">Color</div>
+          <div
+            style="
+              display: grid;
+              grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+              gap: 16px;
+              margin-top: 16px;
+            "
+          >
+            <sc-for list="{{ colorSwatches }}" as="sw" hint-placeholder-count="10">
+              <div style="{{ swatchCardStyle }}">
+                <div
+                  style="height:64px; border-radius:12px; background:{{ sw.value }}; border:1px solid {{ t.borderSubtle }};"
+                ></div>
+                <div
+                  style="font:590 13px -apple-system,sans-serif; color:{{ t.textPrimary }}; margin-top:10px;"
+                >
+                  {{ sw.name }}
+                </div>
+                <div
+                  style="font:400 12px ui-monospace,monospace; color:{{ t.textTertiary }}; margin-top:2px;"
+                >
+                  {{ sw.value }}
+                </div>
+              </div>
+            </sc-for>
+          </div>
+        </div>
+
+        <!-- ============ TYPE SCALE ============ -->
+        <div style="max-width: 1440px; margin: 0 auto; padding: 0 64px 56px">
+          <div style="{{ sectionLabelStyle }}">Typography — SF Pro / system stack</div>
+          <div style="{{ panelStyle }} margin-top:16px; padding:8px 32px;">
+            <sc-for list="{{ typeScale }}" as="ts" hint-placeholder-count="8">
+              <div
+                style="display:flex; align-items:baseline; justify-content:space-between; gap:24px; padding:18px 0; border-bottom:1px solid {{ t.borderSubtle }};"
+              >
+                <span
+                  style="font-family:-apple-system,BlinkMacSystemFont,'SF Pro Display',sans-serif; font-size:{{ ts.size }}px; font-weight:{{ ts.weight }}; letter-spacing:{{ ts.tracking }}; color:{{ t.textPrimary }};"
+                  >{{ ts.label }}</span
+                >
+                <span
+                  style="font:400 13px ui-monospace,monospace; color:{{ t.textTertiary }}; white-space:nowrap;"
+                  >{{ ts.size }}px / {{ ts.weight }}</span
+                >
+              </div>
+            </sc-for>
+          </div>
+        </div>
+
+        <!-- ============ SPACING + RADII + ELEVATION ============ -->
+        <div
+          style="
+            max-width: 1440px;
+            margin: 0 auto;
+            padding: 0 64px 64px;
+            display: grid;
+            grid-template-columns: 1.1fr 1fr 1fr;
+            gap: 40px;
+          "
+        >
+          <div>
+            <div style="{{ sectionLabelStyle }}">Spacing</div>
+            <div style="display: flex; flex-direction: column; gap: 10px; margin-top: 16px">
+              <sc-for list="{{ spacingScale }}" as="sp" hint-placeholder-count="7">
+                <div style="display: flex; align-items: center; gap: 14px">
+                  <div
+                    style="width:{{ sp }}px; height:14px; border-radius:4px; background:{{ t.accent }};"
+                  ></div>
+                  <span style="font:400 13px ui-monospace,monospace; color:{{ t.textSecondary }};"
+                    >{{ sp }}px</span
+                  >
+                </div>
+              </sc-for>
+            </div>
+          </div>
+          <div>
+            <div style="{{ sectionLabelStyle }}">Corner radius</div>
+            <div style="display: flex; flex-wrap: wrap; gap: 16px; margin-top: 16px">
+              <sc-for list="{{ radiusScale }}" as="r" hint-placeholder-count="5">
+                <div style="display: flex; flex-direction: column; align-items: center; gap: 8px">
+                  <div
+                    style="width:56px; height:56px; border-radius:{{ r.value }}px; background:{{ t.bgElevated }}; border:1px solid {{ t.border }};"
+                  ></div>
+                  <span style="font:400 12px ui-monospace,monospace; color:{{ t.textTertiary }};"
+                    >{{ r.name }} · {{ r.value }}</span
+                  >
+                </div>
+              </sc-for>
+            </div>
+          </div>
+          <div>
+            <div style="{{ sectionLabelStyle }}">Elevation</div>
+            <div style="display: flex; flex-wrap: wrap; gap: 16px; margin-top: 16px">
+              <sc-for list="{{ shadowScale }}" as="sh" hint-placeholder-count="4">
+                <div style="display: flex; flex-direction: column; align-items: center; gap: 8px">
+                  <div
+                    style="width:56px; height:56px; border-radius:14px; background:{{ t.bgElevated }}; box-shadow:{{ sh.value }};"
+                  ></div>
+                  <span style="font:400 12px ui-monospace,monospace; color:{{ t.textTertiary }};"
+                    >{{ sh.name }}</span
+                  >
+                </div>
+              </sc-for>
+            </div>
+          </div>
+        </div>
+
+        <!-- ============ SCREEN: UPLOAD DROPZONE ============ -->
+        <div style="max-width: 1440px; margin: 0 auto; padding: 0 64px 80px">
+          <div style="{{ sectionLabelStyle }}">Screen — Upload Dropzone</div>
+          <p
+            style="font:400 14px/1.6 -apple-system,sans-serif; color:{{ t.textSecondary }}; max-width:640px; margin:12px 0 28px;"
+          >
+            Empty state invites the first drop with quiet instruction; the active state responds
+            immediately with accent glow and scale — motion communicates readiness, not decoration.
+          </p>
+
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 28px">
+            <!-- Empty state app shell -->
+            <div style="{{ appShellStyle }}">
+              <div style="{{ sidebarStyle }}">
+                <div
+                  style="font:600 13px -apple-system,sans-serif; color:{{ t.textTertiary }}; padding:0 12px; margin-bottom:6px;"
+                >
+                  Library
+                </div>
+                <sc-for list="{{ sidebarLibrary }}" as="item" hint-placeholder-count="3">
+                  <div style="{{ item.active ? sidebarItemActiveStyle : sidebarItemStyle }}">
+                    <span
+                      style="{{ item.active ? sidebarDotActiveStyle : sidebarDotStyle }}"
+                    ></span>
+                    {{ item.label }}
+                  </div>
+                </sc-for>
+                <div
+                  style="font:600 13px -apple-system,sans-serif; color:{{ t.textTertiary }}; padding:0 12px; margin:18px 0 6px;"
+                >
+                  Folders
+                </div>
+                <sc-for list="{{ sidebarFolders }}" as="item" hint-placeholder-count="4">
+                  <div style="{{ sidebarItemStyle }}">
+                    <span style="{{ sidebarDotStyle }}"></span>
+                    {{ item.label }}
+                    <span
+                      style="margin-left:auto; font:400 12px ui-monospace,monospace; color:{{ t.textTertiary }};"
+                      >{{ item.count }}</span
+                    >
+                  </div>
+                </sc-for>
+              </div>
+              <div style="{{ mainAreaStyle }}">
+                <div
+                  style="
+                    display: flex;
+                    align-items: center;
+                    justify-content: space-between;
+                    margin-bottom: 20px;
+                  "
+                >
+                  <span
+                    style="font:700 20px -apple-system,sans-serif; color:{{ t.textPrimary }}; letter-spacing:-0.01em;"
+                    >All Photos</span
+                  >
+                  <span style="{{ pillLabelStyle }}">Empty state</span>
+                </div>
+                <div style="{{ dropzoneEmptyStyle }}">
+                  <div style="{{ uploadIconWrapStyle }}">
+                    <div style="{{ uploadArrowStemStyle }}"></div>
+                    <div style="{{ uploadArrowHeadStyle }}"></div>
+                  </div>
+                  <div
+                    style="font:590 17px -apple-system,sans-serif; color:{{ t.textPrimary }}; margin-top:20px;"
+                  >
+                    Drag photos here
+                  </div>
+                  <div
+                    style="font:400 14px -apple-system,sans-serif; color:{{ t.textTertiary }}; margin-top:6px;"
+                  >
+                    or
+                  </div>
+                  <button style="{{ primaryButtonStyle }} margin-top:14px;">Choose Files</button>
+                </div>
+              </div>
+            </div>
+
+            <!-- Active / drag-over state app shell -->
+            <div style="{{ appShellStyle }}">
+              <div style="{{ sidebarStyle }}">
+                <div
+                  style="font:600 13px -apple-system,sans-serif; color:{{ t.textTertiary }}; padding:0 12px; margin-bottom:6px;"
+                >
+                  Library
+                </div>
+                <sc-for list="{{ sidebarLibrary }}" as="item" hint-placeholder-count="3">
+                  <div style="{{ item.active ? sidebarItemActiveStyle : sidebarItemStyle }}">
+                    <span
+                      style="{{ item.active ? sidebarDotActiveStyle : sidebarDotStyle }}"
+                    ></span>
+                    {{ item.label }}
+                  </div>
+                </sc-for>
+                <div
+                  style="font:600 13px -apple-system,sans-serif; color:{{ t.textTertiary }}; padding:0 12px; margin:18px 0 6px;"
+                >
+                  Folders
+                </div>
+                <sc-for list="{{ sidebarFolders }}" as="item" hint-placeholder-count="4">
+                  <div style="{{ sidebarItemStyle }}">
+                    <span style="{{ sidebarDotStyle }}"></span>
+                    {{ item.label }}
+                    <span
+                      style="margin-left:auto; font:400 12px ui-monospace,monospace; color:{{ t.textTertiary }};"
+                      >{{ item.count }}</span
+                    >
+                  </div>
+                </sc-for>
+              </div>
+              <div style="{{ mainAreaStyle }}">
+                <div
+                  style="
+                    display: flex;
+                    align-items: center;
+                    justify-content: space-between;
+                    margin-bottom: 20px;
+                  "
+                >
+                  <span
+                    style="font:700 20px -apple-system,sans-serif; color:{{ t.textPrimary }}; letter-spacing:-0.01em;"
+                    >All Photos</span
+                  >
+                  <span style="{{ pillLabelActiveStyle }}">Drag active</span>
+                </div>
+                <div style="{{ dropzoneActiveStyle }}">
+                  <div style="{{ uploadIconWrapActiveStyle }}">
+                    <div style="{{ uploadArrowStemActiveStyle }}"></div>
+                    <div style="{{ uploadArrowHeadActiveStyle }}"></div>
+                  </div>
+                  <div
+                    style="font:590 17px -apple-system,sans-serif; color:{{ t.accent }}; margin-top:20px;"
+                  >
+                    Release to upload
+                  </div>
+                  <div
+                    style="font:400 14px -apple-system,sans-serif; color:{{ t.textSecondary }}; margin-top:6px;"
+                  >
+                    4 images ready
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </x-dc>
+    <script type="text/x-dc" data-dc-script>
+      class Component extends DCLogic {
+        state = { theme: 'light' };
+
+        toggleTheme = () => {
+          this.setState(s => ({ theme: s.theme === 'light' ? 'dark' : 'light' }));
+        };
+
+        getTokens() {
+          const light = {
+            bg: 'oklch(1 0 0)',
+            bgSecondary: 'oklch(0.975 0.003 250)',
+            bgElevated: 'oklch(1 0 0)',
+            border: 'oklch(0.89 0.005 250)',
+            borderSubtle: 'oklch(0.93 0.003 250)',
+            textPrimary: 'oklch(0.18 0.01 250)',
+            textSecondary: 'oklch(0.47 0.012 250)',
+            textTertiary: 'oklch(0.62 0.008 250)',
+            accent: 'oklch(0.55 0.18 250)',
+            accentSubtle: 'oklch(0.94 0.035 250)',
+            shadowTint: '32,42,58'
+          };
+          const dark = {
+            bg: 'oklch(0.17 0.006 250)',
+            bgSecondary: 'oklch(0.205 0.008 250)',
+            bgElevated: 'oklch(0.235 0.009 250)',
+            border: 'oklch(0.33 0.01 250)',
+            borderSubtle: 'oklch(0.28 0.008 250)',
+            textPrimary: 'oklch(0.96 0.003 250)',
+            textSecondary: 'oklch(0.72 0.008 250)',
+            textTertiary: 'oklch(0.54 0.008 250)',
+            accent: 'oklch(0.7 0.15 250)',
+            accentSubtle: 'oklch(0.32 0.06 250)',
+            shadowTint: '0,0,0'
+          };
+          return this.state.theme === 'light' ? light : dark;
+        }
+
+        renderVals() {
+          const t = this.getTokens();
+          const isDark = this.state.theme === 'dark';
+          const shadow = (y, blur, a) => `0 ${y}px ${blur}px rgba(${t.shadowTint},${a})`;
+
+          const colorSwatches = [
+            { name: 'Background', value: t.bg },
+            { name: 'Bg Secondary', value: t.bgSecondary },
+            { name: 'Bg Elevated', value: t.bgElevated },
+            { name: 'Border', value: t.border },
+            { name: 'Border Subtle', value: t.borderSubtle },
+            { name: 'Text Primary', value: t.textPrimary },
+            { name: 'Text Secondary', value: t.textSecondary },
+            { name: 'Text Tertiary', value: t.textTertiary },
+            { name: 'Accent', value: t.accent },
+            { name: 'Accent Subtle', value: t.accentSubtle }
+          ];
+
+          const typeScale = [
+            { label: 'Large Title', size: 34, weight: 700, tracking: '-0.015em' },
+            { label: 'Title 1', size: 28, weight: 700, tracking: '-0.012em' },
+            { label: 'Title 2', size: 22, weight: 700, tracking: '-0.008em' },
+            { label: 'Title 3', size: 20, weight: 600, tracking: '-0.006em' },
+            { label: 'Headline', size: 17, weight: 600, tracking: '-0.004em' },
+            { label: 'Body', size: 17, weight: 400, tracking: '0em' },
+            { label: 'Subhead', size: 15, weight: 400, tracking: '0em' },
+            { label: 'Footnote', size: 13, weight: 400, tracking: '0em' }
+          ];
+
+          const spacingScale = [4, 8, 12, 16, 24, 32, 48, 64];
+          const radiusScale = [
+            { name: 'sm', value: 6 },
+            { name: 'md', value: 10 },
+            { name: 'lg', value: 14 },
+            { name: 'xl', value: 20 },
+            { name: 'full', value: 28 }
+          ];
+          const shadowScale = [
+            { name: 'e1', value: shadow(1, 3, isDark ? 0.5 : 0.05) },
+            { name: 'e2', value: shadow(3, 10, isDark ? 0.55 : 0.07) },
+            { name: 'e3', value: shadow(10, 28, isDark ? 0.6 : 0.10) },
+            { name: 'e4', value: shadow(20, 56, isDark ? 0.65 : 0.16) }
+          ];
+
+          const sidebarLibrary = [
+            { label: 'All Photos', active: true },
+            { label: 'Favorites', active: false },
+            { label: 'Shared', active: false }
+          ];
+          const sidebarFolders = [
+            { label: 'Trips', count: 128 },
+            { label: 'Family', count: 340 },
+            { label: 'Work', count: 52 },
+            { label: 'Screenshots', count: 19 }
+          ];
+
+          return {
+            t,
+            toggleTheme: this.toggleTheme,
+            rootStyle: `min-height:100vh; background:${t.bg}; transition:background 0.35s ease; font-family:-apple-system,BlinkMacSystemFont,'SF Pro Text',sans-serif;`,
+
+            toggleLabel: isDark ? 'Dark' : 'Light',
+            toggleBtnStyle: `display:flex; align-items:center; gap:10px; padding:10px 16px; border-radius:999px; border:1px solid ${t.border}; background:${t.bgElevated}; color:${t.textPrimary}; font:590 13px -apple-system,sans-serif; cursor:pointer; box-shadow:${shadow(1,3,isDark?0.4:0.05)}; flex-shrink:0;`,
+            toggleDotStyle: `width:8px; height:8px; border-radius:50%; background:${t.accent}; display:inline-block;`,
+
+            noteCardStyle: `background:${t.bgSecondary}; border:1px solid ${t.borderSubtle}; border-radius:14px; padding:20px 24px;`,
+
+            sectionLabelStyle: `font:600 12px -apple-system,sans-serif; letter-spacing:0.06em; text-transform:uppercase; color:${t.textTertiary};`,
+
+            swatchCardStyle: `background:${t.bgElevated}; border:1px solid ${t.borderSubtle}; border-radius:14px; padding:14px;`,
+            panelStyle: `background:${t.bgElevated}; border:1px solid ${t.borderSubtle}; border-radius:16px;`,
+
+            colorSwatches, typeScale, spacingScale, radiusScale, shadowScale,
+            sidebarLibrary, sidebarFolders,
+
+            pillLabelStyle: `font:590 11px -apple-system,sans-serif; letter-spacing:0.03em; text-transform:uppercase; color:${t.textTertiary}; background:${t.bgSecondary}; padding:5px 10px; border-radius:999px;`,
+            pillLabelActiveStyle: `font:590 11px -apple-system,sans-serif; letter-spacing:0.03em; text-transform:uppercase; color:${t.accent}; background:${t.accentSubtle}; padding:5px 10px; border-radius:999px;`,
+
+            appShellStyle: `display:grid; grid-template-columns:200px 1fr; border-radius:20px; overflow:hidden; border:1px solid ${t.border}; box-shadow:${shadow(10,28,isDark?0.6:0.09)}; background:${t.bg}; height:520px;`,
+            sidebarStyle: `background:${t.bgSecondary}; padding:20px 10px; border-right:1px solid ${t.borderSubtle}; overflow:auto;`,
+            mainAreaStyle: `padding:28px 32px; display:flex; flex-direction:column; background:${t.bg};`,
+
+            sidebarItemStyle: `display:flex; align-items:center; gap:10px; padding:8px 12px; border-radius:8px; font:400 14px -apple-system,sans-serif; color:${t.textSecondary};`,
+            sidebarItemActiveStyle: `display:flex; align-items:center; gap:10px; padding:8px 12px; border-radius:8px; font:590 14px -apple-system,sans-serif; color:${t.accent}; background:${t.accentSubtle};`,
+            sidebarDotStyle: `width:6px; height:6px; border-radius:50%; background:${t.textTertiary}; flex-shrink:0;`,
+            sidebarDotActiveStyle: `width:6px; height:6px; border-radius:50%; background:${t.accent}; flex-shrink:0;`,
+
+            dropzoneEmptyStyle: `flex:1; display:flex; flex-direction:column; align-items:center; justify-content:center; border:1.5px dashed ${t.border}; border-radius:18px; background:${t.bgSecondary};`,
+            dropzoneActiveStyle: `flex:1; display:flex; flex-direction:column; align-items:center; justify-content:center; border:1.5px dashed ${t.accent}; border-radius:18px; background:${t.accentSubtle}; box-shadow:0 0 0 4px ${t.accentSubtle};`,
+
+            uploadIconWrapStyle: `width:56px; height:56px; border-radius:16px; background:${t.bgElevated}; border:1px solid ${t.border}; display:flex; align-items:center; justify-content:center; position:relative;`,
+            uploadIconWrapActiveStyle: `width:56px; height:56px; border-radius:16px; background:${t.accent}; display:flex; align-items:center; justify-content:center; position:relative; animation:pulse 1.4s ease-in-out infinite;`,
+
+            uploadArrowStemStyle: `width:3px; height:18px; background:${t.textSecondary}; border-radius:2px;`,
+            uploadArrowStemActiveStyle: `width:3px; height:18px; background:#fff; border-radius:2px;`,
+            uploadArrowHeadStyle: `position:absolute; top:12px; width:0; height:0; border-left:6px solid transparent; border-right:6px solid transparent; border-bottom:8px solid ${t.textSecondary};`,
+            uploadArrowHeadActiveStyle: `position:absolute; top:12px; width:0; height:0; border-left:6px solid transparent; border-right:6px solid transparent; border-bottom:8px solid #fff;`,
+
+            primaryButtonStyle: `padding:9px 18px; border-radius:10px; border:none; background:${t.accent}; color:#fff; font:590 14px -apple-system,sans-serif; cursor:pointer; box-shadow:${shadow(1,3,isDark?0.4:0.08)};`
+          };
+        }
+      }
+    </script>
+  </body>
+</html>
