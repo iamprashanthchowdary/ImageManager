@@ -40,6 +40,7 @@ Apple HIG-inspired (clarity/deference/depth), oklch tokens, system font stack, l
 | Delete a preset (built-in or custom), non-destructive — undo via toast, built-ins restorable                              | done   |
 | Export downloaded image as PNG/JPG/WebP (+AVIF where the browser can encode it), with a quality control for lossy formats | done   |
 | Preferences persisted in `localStorage` (no account needed yet)                                                           | done   |
+| Marketing landing page (`/`) — Apple-product-page style, scroll-reveal sections via `motion`, `src/features/marketing/`   | done   |
 
 **Future increment (needs Phase 3 — Auth):** sync custom ratios + deletions to the user's account instead of `localStorage`, so they follow the user across devices. Not built now — `localStorage` is the right amount of persistence for an anonymous tool.
 

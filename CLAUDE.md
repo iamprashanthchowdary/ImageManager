@@ -23,6 +23,8 @@ The design system (tokens + Button/Badge/Panel/Toast/AppShell/Sidebar/ThemeToggl
 
 **Cross-feature logic goes in `src/lib/<domain>/` (pure) or `src/hooks/` (React), not duplicated per-feature.** Example: image format/encoding/download handling is `src/lib/image/` + `src/hooks/use-image-format-options.ts`, built once for the crop feature but written to be reused as-is by a future image-converter feature. When you're about to write logic a second feature will plausibly need too, check `src/lib/` and `src/hooks/` first — and if you're building the second feature that needs something a first feature already solved locally, promote that logic up rather than copying it.
 
+**The marketing landing page (`/`) is built** — `src/features/marketing/`. Apple-product-page style: instant-render hero (no entry animation — it's above the fold, animating it in would just delay LCP for no benefit), then scroll-reveal feature sections (`FeatureSection`, via `motion`'s `whileInView`) with illustrative mockups built from our own design tokens, not screenshots. `motion` is a dependency of this route only — Next.js code-splits per page, so it doesn't touch `/crop`'s bundle. Any component using `whileInView`/viewport detection needs `globalThis.IntersectionObserver` mocked in `src/test/setup.ts` (jsdom doesn't implement it) or its tests will throw.
+
 Do not add the still-missing pieces speculatively. Add each one in the commit/PR that actually needs it, per [docs/ROADMAP.md](docs/ROADMAP.md).
 
 ## Tech stack (why → docs/ARCHITECTURE.md §1)
@@ -43,6 +45,7 @@ Do not add the still-missing pieces speculatively. Add each one in the commit/PR
 | Testing          | Vitest + Testing Library (unit), Playwright (e2e)                                                                                                                 |
 | Lint/format      | ESLint (`eslint-config-next`, includes `jsx-a11y`) + Prettier                                                                                                     |
 | State            | Server state via TanStack Query/tRPC; client UI state via Zustand; forms via React Hook Form + Zod                                                                |
+| Animation        | `motion` — scoped to marketing/landing routes only (scroll reveals), not the app's interactive tool UI                                                            |
 
 ## Framework-specific gotchas (Next.js 16 — do not use stale Next 14/15 patterns)
 

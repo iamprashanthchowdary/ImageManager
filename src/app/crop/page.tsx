@@ -1,7 +1,5 @@
 import type { Metadata } from "next";
-import Link from "next/link";
-import { ThemeToggle } from "@/components/layout/theme-toggle";
-import { siteConfig } from "@/config/site";
+import { SiteHeader } from "@/components/layout/site-header";
 import { CropWorkspace } from "@/features/crop/components/CropWorkspace";
 
 export const metadata: Metadata = {
@@ -13,12 +11,7 @@ export const metadata: Metadata = {
 export default function CropPage() {
   return (
     <div className="flex min-h-dvh flex-col">
-      <header className="flex items-center justify-between px-6 py-5 lg:px-10">
-        <Link href="/" className="text-headline text-label font-semibold">
-          {siteConfig.name}
-        </Link>
-        <ThemeToggle />
-      </header>
+      <SiteHeader />
       <main className="flex flex-1 flex-col px-6 pb-10 lg:px-10">
         <CropWorkspace />
       </main>

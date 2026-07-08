@@ -4,8 +4,13 @@ import Home from "./page";
 import { siteConfig } from "@/config/site";
 
 describe("Home", () => {
-  it("renders the site name as the primary heading", () => {
+  it("renders the value-prop headline as the primary heading", () => {
     render(<Home />);
-    expect(screen.getByRole("heading", { level: 1, name: siteConfig.name })).toBeInTheDocument();
+    expect(screen.getByRole("heading", { level: 1 })).toBeInTheDocument();
+  });
+
+  it("renders the site name in the header", () => {
+    render(<Home />);
+    expect(screen.getByRole("link", { name: siteConfig.name })).toBeInTheDocument();
   });
 });
